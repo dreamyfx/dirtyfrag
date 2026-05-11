@@ -1,4 +1,4 @@
-name: Build dirtyfrag (Compatible)
+name: Build dirtyfrag (Static)
 
 on:
   workflow_dispatch:
@@ -8,18 +8,18 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Install older GCC for compatibility
+    - name: Install required packages for static linking
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc-9 g++-9
+        sudo apt-get install -y gcc g++ musl-tools
         
     - name: Clone dirtyfrag repository
       run: git clone https://github.com/V4bel/dirtyfrag.git
       
-    - name: Build dirtyfrag with compatibility flags
+    - name: Build dirtyfrag with static linking
       run: |
         cd dirtyfrag
-        gcc-9 -O0 -Wall -o exp exp.c -lutil -static-libgcc
+        musl-gcc -O0 -Wall -static -o exp exp.c -lutil
         strip exp
         
     - name: Upload built binary
