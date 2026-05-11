@@ -1,25 +1,25 @@
-name: Build dirtyfrag (Static)
+name: Build dirtyfrag
 
 on:
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04  # Using older Ubuntu for better compatibility
     
     steps:
-    - name: Install required packages for static linking
+    - name: Install required packages
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc g++ musl-tools
+        sudo apt-get install -y build-essential linux-headers-generic
         
     - name: Clone dirtyfrag repository
       run: git clone https://github.com/V4bel/dirtyfrag.git
       
-    - name: Build dirtyfrag with static linking
+    - name: Build dirtyfrag with compatibility flags
       run: |
         cd dirtyfrag
-        musl-gcc -O0 -Wall -static -o exp exp.c -lutil
+        gcc -O0 -Wall -o exp exp.c -lutil -static-libgcc
         strip exp
         
     - name: Upload built binary
