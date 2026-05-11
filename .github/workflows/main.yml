@@ -24,7 +24,7 @@ jobs:
         gcc -O0 -Wall -o exp exp.c -lutil
         
     - name: Upload built binary
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dirtyfrag-binary
         path: dirtyfrag/exp
