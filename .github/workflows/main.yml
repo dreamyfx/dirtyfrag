@@ -1,10 +1,6 @@
-name: Build dirtyfrag
+name: Build dirtyfrag (Compatible)
 
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -12,19 +8,22 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      
+    - name: Install older GCC for compatibility
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-9 g++-9
+        
     - name: Clone dirtyfrag repository
       run: git clone https://github.com/V4bel/dirtyfrag.git
       
-    - name: Build dirtyfrag
+    - name: Build dirtyfrag with compatibility flags
       run: |
         cd dirtyfrag
-        gcc -O0 -Wall -o exp exp.c -lutil
+        gcc-9 -O0 -Wall -o exp exp.c -lutil -static-libgcc
+        strip exp
         
     - name: Upload built binary
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: dirtyfrag-binary
         path: dirtyfrag/exp
