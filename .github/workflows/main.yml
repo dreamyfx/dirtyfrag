@@ -1,0 +1,30 @@
+name: Build dirtyfrag
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Clone dirtyfrag repository
+      run: git clone https://github.com/V4bel/dirtyfrag.git
+      
+    - name: Build dirtyfrag
+      run: |
+        cd dirtyfrag
+        gcc -O0 -Wall -o exp exp.c -lutil
+        
+    - name: Upload built binary
+      uses: actions/upload-artifact@v3
+      with:
+        name: dirtyfrag-binary
+        path: dirtyfrag/exp
